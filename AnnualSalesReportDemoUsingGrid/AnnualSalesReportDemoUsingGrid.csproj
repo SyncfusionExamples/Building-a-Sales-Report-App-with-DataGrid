@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\down-arrow-28.png" />
+    <None Remove="Images\estimate.png" />
+    <None Remove="Images\export.png" />
+    <None Remove="Images\products.png" />
+    <None Remove="Images\sales_decrease.png" />
+    <None Remove="Images\sales_increased.png" />
+    <None Remove="Images\total-sales.png" />
+    <None Remove="Images\total_sales.png" />
+    <None Remove="Images\up-2-24.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.DataGridExcelExport.Wpf" Version="29.1.33" />
+    <PackageReference Include="Syncfusion.SfGrid.WPF" Version="29.1.33" />
+    <PackageReference Include="Syncfusion.SfProgressBar.WPF" Version="29.1.33" />
+    <PackageReference Include="Syncfusion.SfSkinManager.WPF" Version="29.1.33" />
+    <PackageReference Include="Syncfusion.Themes.Windows11Light.WPF" Version="29.1.33" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\down-arrow-28.png" />
+    <Resource Include="Images\estimate.png" />
+    <Resource Include="Images\export.png" />
+    <Resource Include="Images\products.png" />
+    <Resource Include="Images\sales_decrease.png" />
+    <Resource Include="Images\sales_increased.png" />
+    <Resource Include="Images\total_sales.png" />
+    <Resource Include="Images\up-2-24.png" />
+  </ItemGroup>
+
+</Project>

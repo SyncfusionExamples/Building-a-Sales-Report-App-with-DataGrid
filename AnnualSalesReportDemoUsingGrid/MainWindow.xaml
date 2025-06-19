@@ -1,0 +1,170 @@
+﻿<Window x:Class="AnnualSalesReportDemoUsingGrid.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:local="clr-namespace:AnnualSalesReportDemoUsingGrid"
+        xmlns:syncfusionskin="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManagerExtension ThemeName=Windows11Light}"
+        mc:Ignorable="d"
+        Title="SalesReportApp" Height="670" Width="1000">
+    <Window.DataContext>
+        <local:SalesReportViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="syncfusion:GridHeaderCellControl">
+            <Setter Property="FontWeight" Value="DemiBold"/>
+        </Style>       
+        <local:ColorConverter x:Key="colorConverter"/>
+        <local:PercentageConverter x:Key="converter"/>
+        <local:BoolToImageConverter x:Key="boolToImageConverter"/>
+        <Style x:Key="rowStyle1" TargetType="syncfusion:VirtualizingCellsControl">
+            <Setter Property="Background" Value="{Binding Converter={StaticResource colorConverter}}" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="130"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>           
+            <TextBlock x:Name="label" Text="Sales Report 2025" FontSize="28" FontWeight="Bold"/>
+            <syncfusion:SplitButtonAdv x:Name="splitbutton" Label="Export" Grid.Column="1" FontSize="16"  Height="30" Width="150" SizeMode="Normal" SmallIcon="/Images/export.png" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <syncfusion:DropDownMenuGroup>
+                    <syncfusion:DropDownMenuItem HorizontalAlignment="Left" Header="Annual Report" Command="{Binding AnnualReportCommand}" CommandParameter="{Binding ElementName=dataGrid}"/> 
+                    <syncfusion:DropDownMenuItem HorizontalAlignment="Left" Header="Quarterly Report" Command="{Binding QuarterlyReportCommand}" CommandParameter="{Binding ElementName=quarterlyReportsGrid}"/>
+                    <syncfusion:DropDownMenuItem HorizontalAlignment="Left" Header="Monthly Report" Command="{Binding MonthlyReportCommand}" CommandParameter="{Binding ElementName=monthlyReportsGrid}"/>
+                </syncfusion:DropDownMenuGroup>
+            </syncfusion:SplitButtonAdv>
+            </Grid>
+            <Grid Margin="10,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="20"/>                    
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Images/products.png"/>
+                <TextBlock Grid.Column="1" Text="Total No of Prducts : " FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="15" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" />               
+            </Grid>
+            <Grid Margin="10,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Images/estimate.png"/>
+                <TextBlock  Grid.Column="1" Text="Esitimated Sales : " FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="{Binding EstimatedSales, StringFormat=C}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                <Image Grid.Column="3" Source="/Images/total_sales.png"/>
+                <TextBlock  Grid.Column="4" Text="Total Sales Achieved : " FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="5" Text="{Binding TotalSales, StringFormat=C}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" HorizontalAlignment="Left"/>                
+            </Grid>
+        </StackPanel>
+        <GroupBox x:Name="groupbox" Header="Annual Product Sales Report" Margin="10" FontSize="16" FontWeight="DemiBold" Grid.RowSpan="2" Grid.Row="1">
+            <syncfusion:SfDataGrid x:Name="dataGrid"                        
+                       AutoGenerateColumns="False"
+                       ColumnSizer="Star"
+                        RowHeight="30"           
+                       GridLinesVisibility="Horizontal"
+                       HeaderLinesVisibility="Horizontal"
+                       ItemsSource="{Binding Reports}">
+                <syncfusion:SfDataGrid.Columns>
+                    <syncfusion:GridTextColumn MappingName="ProductName" HeaderText="Product Name"/>
+                    <syncfusion:GridCurrencyColumn MappingName="EstimatedSales" HeaderText="Estimated Sales"/>
+                    <syncfusion:GridCurrencyColumn MappingName="SalesAchieved" HeaderText="Sales Achieved" Width="150">
+                        <syncfusion:GridCurrencyColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding IsSalesIncreased, Converter={StaticResource boolToImageConverter}, ConverterParameter='AnnualReport'}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding SalesAchieved, StringFormat=C}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </syncfusion:GridCurrencyColumn.CellTemplate>
+                    </syncfusion:GridCurrencyColumn>
+                    <syncfusion:GridTemplateColumn MappingName="SalesPercent" HeaderText="Sales Percent" Width="250">
+                        <syncfusion:GridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="40"/>
+                                    </Grid.ColumnDefinitions>
+                                    <syncfusion:SfLinearProgressBar Grid.Column="0"  Progress="{Binding SalesPercent}" Width="180" Height="10" Padding="2" Minimum="0" Maximum="150" IndicatorCornerRadius="4">
+
+                                    </syncfusion:SfLinearProgressBar>
+                                    <TextBlock Grid.Column="1" Text="{Binding SalesPercent, Converter={StaticResource converter}}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </syncfusion:GridTemplateColumn.CellTemplate>
+                    </syncfusion:GridTemplateColumn>
+                   
+                </syncfusion:SfDataGrid.Columns>
+            </syncfusion:SfDataGrid>
+        </GroupBox>
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <GroupBox Header="Quarterly Report"  Margin="10" FontSize="16" FontWeight="DemiBold" >
+                <syncfusion:SfDataGrid x:Name="quarterlyReportsGrid"                               
+                                   AutoGenerateColumns="False"
+                                   RowHeight="30"                                   
+                                   GridLinesVisibility="Horizontal"
+                                   HeaderLinesVisibility="Horizontal"
+                                   ColumnSizer="Star"
+                       ItemsSource="{Binding QuarterlyReports}">
+                    <syncfusion:SfDataGrid.Columns>
+                        <syncfusion:GridTextColumn MappingName="QuarterName" HeaderText="Quarter Name"/>
+                        <syncfusion:GridTextColumn MappingName="SalesAchieved" HeaderText="Sales Achieved">
+                            <syncfusion:GridTextColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="{Binding SalesAchieved, StringFormat=C}" VerticalAlignment="Center"/>
+                                        <Image Grid.Column="1" Source="{Binding IsSalesIncreased, Converter={StaticResource boolToImageConverter}}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </syncfusion:GridTextColumn.CellTemplate>
+                        </syncfusion:GridTextColumn>
+                    </syncfusion:SfDataGrid.Columns>
+                </syncfusion:SfDataGrid>
+            </GroupBox>
+            <GroupBox Header="Monthly Report" FontSize="16" Margin="10,0,10,10" FontWeight="DemiBold" >
+                <syncfusion:SfDataGrid x:Name="monthlyReportsGrid"                                
+                                       AutoGenerateColumns="False"
+                                       ColumnSizer="Star"
+                                       RowHeight="30"
+                                       RowStyle="{StaticResource rowStyle1}"
+                                       GridLinesVisibility="Horizontal"
+                                       HeaderLinesVisibility="Horizontal"
+                                       ItemsSource="{Binding MonthlyReports}">
+                    <syncfusion:SfDataGrid.Columns>
+                        <syncfusion:GridTextColumn MappingName="MonthName" HeaderText="Month"/>
+                        <syncfusion:GridTextColumn MappingName="SalesAchieved" HeaderText="Sales Achieved"/>
+                    </syncfusion:SfDataGrid.Columns>
+                </syncfusion:SfDataGrid>
+            </GroupBox>
+        </StackPanel>
+        
+    </Grid>
+</Window>
